@@ -1,0 +1,21 @@
+{
+  "name": "@careerpilot/ai-service",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@careerpilot/resume-templates": "*",
+    "@careerpilot/service-kit": "*",
+    "@careerpilot/shared": "*",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "mongoose": "^8.9.0",
+    "sanitize-html": "2.13.1",
+    "zod": "^3.23.8"
+  }
+}

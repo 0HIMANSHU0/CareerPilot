@@ -1,0 +1,82 @@
+# docker compose up --build
+# Secrets come from a root .env file (see .env.example); nothing secret is hardcoded here.
+x-internal: &internal
+  INTERNAL_SECRET: ${INTERNAL_SECRET:?set INTERNAL_SECRET in .env}
+
+services:
+  mongo:
+    image: mongo:7
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+
+  redis:
+    image: redis:7-alpine
+
+  auth-service:
+    build: { context: ., dockerfile: services/auth-service/Dockerfile }
+    environment:
+      <<: *internal
+      PORT: 4001
+      MONGO_URI: mongodb://mongo:27017/careerpilot_auth
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?set JWT_ACCESS_SECRET in .env}
+      ACCESS_TOKEN_TTL_SECONDS: 3600
+      BCRYPT_ROUNDS: 12
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+      SEED_DEMO_PASSWORD: ${SEED_DEMO_PASSWORD}
+    depends_on: { mongo: { condition: service_healthy } }
+
+  ai-service:
+    build: { context: ., dockerfile: services/ai-service/Dockerfile }
+    environment:
+      <<: *internal
+      PORT: 4002
+      MONGO_URI: mongodb://mongo:27017/careerpilot_ai
+      EMERGENT_LLM_KEY: ${EMERGENT_LLM_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-claude-opus-5-5}
+    depends_on: { mongo: { condition: service_healthy } }
+
+  booking-service:
+    build: { context: ., dockerfile: services/booking-service/Dockerfile }
+    environment:
+      <<: *internal
+      PORT: 4003
+      MONGO_URI: mongodb://mongo:27017/careerpilot_booking
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${GOOGLE_SERVICE_ACCOUNT_JSON:-}
+      GOOGLE_CALENDAR_ID: ${GOOGLE_CALENDAR_ID:-}
+      GMAIL_USER: ${GMAIL_USER:-}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
+    # Exposed so Stripe can deliver webhooks directly (not via the gateway).
+    ports: ["4003:4003"]
+    depends_on: { mongo: { condition: service_healthy } }
+
+  gateway:
+    build: { context: ., dockerfile: services/gateway/Dockerfile }
+    environment:
+      <<: *internal
+      PORT: 4000
+      AUTH_SERVICE_URL: http://auth-service:4001
+      AI_SERVICE_URL: http://ai-service:4002
+      BOOKING_SERVICE_URL: http://booking-service:4003
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      CORS_ORIGINS: http://localhost:3000
+      TRUST_PROXY: 1
+      PROXY_TIMEOUT_MS: 120000
+      DASHBOARD_TIMEOUT_MS: 1500
+    ports: ["4000:4000"]
+    depends_on: [auth-service, ai-service, booking-service]
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    environment:
+      GATEWAY_URL: http://gateway:4000
+    ports: ["3000:3000"]
+    depends_on: [gateway]
+
+volumes:
+  mongo-data:

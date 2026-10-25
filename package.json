@@ -1,0 +1,25 @@
+{
+  "name": "careerpilot",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI-powered Career & Consultation Platform (monorepo)",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,gateway,auth,ai,booking -c blue,magenta,green,yellow,cyan \"npm run dev:web\" \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:ai\" \"npm run dev:booking\"",
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev:gateway": "npm --prefix services/gateway run dev",
+    "dev:auth": "npm --prefix services/auth-service run dev",
+    "dev:ai": "npm --prefix services/ai-service run dev",
+    "dev:booking": "npm --prefix services/booking-service run dev",
+    "seed": "npm --prefix services/auth-service run seed && npm --prefix services/booking-service run seed",
+    "build:web": "npm --prefix apps/web run build",
+    "docker:up": "docker compose up --build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

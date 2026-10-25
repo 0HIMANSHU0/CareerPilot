@@ -1,0 +1,26 @@
+{
+  "summary": "Phase 0 CareerPilot tested end-to-end via external URL. Backend: 16/16 pytest pass (health, anon 401 envelope, register USER/CONSULTANT 201 + httpOnly Secure cookie, ADMIN register 400 VALIDATION_ERROR, duplicate 409, weak pw 400, login ok/401 'Invalid email or password', /me, dashboard stats+services+partial:false, /api/bookings 404 JSON, logout clears session, direct service calls on 4001/4002/4003 -> MISSING_INTERNAL_TOKEN, forged token -> INVALID_INTERNAL_TOKEN). Resume-template node tests 2/2 pass. Frontend: login validation + login-error alert, USER/CONSULTANT/ADMIN role redirects and role-specific sidebars, route protection (anon -> /login?next=..., next honored for /dashboard and /resumes, cross-role redirect to home, logged-in /login and / redirect to home), register USER and CONSULTANT via role toggle with redirect by role, duplicate email register-error, logout, all placeholder pages render page-title + empty state, profile details, mobile 390px sheet nav + logout, no horizontal overflow, no page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Login/Register", "issues": ["Empty email shows 'Enter a valid email' instead of a 'required' message (cosmetic)"]},
+      {"screen": "Mobile top bar", "issues": ["Health pill collapses to just a green dot and no brand shown in top bar (acceptable, cosmetic)"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_phase0_gateway_auth.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "lib/access.ts safeNext/canAccess compares raw `next` including query string; e.g. next=/dashboard?tab=x fails the prefix check and silently falls back to role home (minor UX).",
+    "Gateway PUBLIC_PATHS uses exact case-sensitive Set match while Express routing is case-insensitive/trailing-slash tolerant; this fails closed (safe) but /api/health/ or /api/auth/login/ would return 401 instead of working.",
+    "Gateway dashboard 'partial' is computed as ai.status !== booking.status — correct for 2 services, but will need rework when more services are aggregated."
+  ],
+  "updated_files": ["/app/backend/tests/test_phase0_gateway_auth.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "Used /app/memory/test_credentials.md (admin, riya.consultant, rahul.user) - all valid",
+  "seed_data_creation": "Created test users: test_<run>_u@example.com, test_<run>_c@example.com (pytest), test_ui_u_<ts>@example.com, test_ui_c_<ts>@example.com (UI). Not cleaned up (no delete endpoint).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run `pytest /app/backend/tests/test_phase0_gateway_auth.py` as regression (uses ~6 auth calls; rate limit 30/15min/IP). Placeholder pages are intentional (Phase 2/3). Partial-failure dashboard not re-tested (main agent verified manually; services must not be killed)."
+}

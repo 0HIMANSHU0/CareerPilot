@@ -1,0 +1,136 @@
+{
+  "project_name": "CareerPilot - AI-Powered Career & Consultation Platform",
+  "archetype": "Swiss High-Contrast Executive & Precision SaaS",
+  "theme": "Light & Dark Dual Capability (Primary: Crisp Light Executive with Slate Dark Sidebar / Dark Mode toggle)",
+  "typography": {
+    "heading_font": "Plus Jakarta Sans, sans-serif",
+    "body_font": "Inter, sans-serif",
+    "mono_font": "JetBrains Mono, monospace",
+    "hierarchy": {
+      "h1": "text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100",
+      "h2": "text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+      "h3": "text-lg md:text-xl font-semibold text-slate-900 dark:text-slate-100",
+      "h4": "text-base font-medium text-slate-800 dark:text-slate-200",
+      "body": "text-sm text-slate-600 dark:text-slate-300 leading-relaxed",
+      "small_label": "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+    }
+  },
+  "colors": {
+    "brand_primary": {
+      "light": "#2563eb",
+      "hover": "#1d4ed8",
+      "dark": "#3b82f6",
+      "hsl": "221.2 83.2% 53.3%"
+    },
+    "brand_accent": {
+      "emerald": "#10b981",
+      "amber": "#f59e0b",
+      "rose": "#f43f5e",
+      "indigo": "#6366f1"
+    },
+    "slate_neutrals": {
+      "bg_light": "#f8fafc",
+      "card_light": "#ffffff",
+      "border_light": "#e2e8f0",
+      "sidebar_bg": "#0f172a",
+      "sidebar_hover": "#1e293b",
+      "text_dark": "#0f172a",
+      "text_muted": "#64748b"
+    },
+    "service_health_status": {
+      "healthy": {
+        "bg": "bg-emerald-500/10",
+        "text": "text-emerald-700 dark:text-emerald-400",
+        "border": "border-emerald-200 dark:border-emerald-800",
+        "dot": "bg-emerald-500"
+      },
+      "degraded": {
+        "bg": "bg-amber-500/10",
+        "text": "text-amber-700 dark:text-amber-400",
+        "border": "border-amber-200 dark:border-amber-800",
+        "dot": "bg-amber-500"
+      },
+      "outage": {
+        "bg": "bg-rose-500/10",
+        "text": "text-rose-700 dark:text-rose-400",
+        "border": "border-rose-200 dark:border-rose-800",
+        "dot": "bg-rose-500"
+      }
+    }
+  },
+  "layout_and_navigation": {
+    "app_shell": "Persistent sidebar layout with responsive sheet drawer on mobile. Left navigation sidebar with rich brand logo, role badge, session status, and distinct section groupings (Main Menu, Career Tools, Role Specific). Top header with active breadcrumb, partial failure/service health banner pill, user profile dropdown, and quick role switch or session status.",
+    "routes": [
+      "/login",
+      "/register",
+      "/dashboard",
+      "/chat",
+      "/chat/[sessionId]",
+      "/resumes",
+      "/resumes/create",
+      "/resumes/[id]/edit",
+      "/resumes/[id]/preview",
+      "/consultations",
+      "/consultations/book",
+      "/profile",
+      "/consultant",
+      "/admin"
+    ],
+    "role_access_rules": {
+      "USER": ["/dashboard", "/chat", "/chat/[sessionId]", "/resumes", "/resumes/create", "/resumes/[id]/edit", "/resumes/[id]/preview", "/consultations", "/consultations/book", "/profile"],
+      "CONSULTANT": ["/consultant", "/dashboard", "/chat", "/consultations", "/profile"],
+      "ADMIN": ["/admin", "/dashboard", "/chat", "/resumes", "/consultations", "/profile"]
+    }
+  },
+  "component_guidance": {
+    "stat_cards": {
+      "metrics": ["totalResumes", "totalChats", "upcomingConsultations", "completedConsultations"],
+      "styling": "Glassmorphic or crisp border-slate-200 dark:border-slate-800 background, dynamic status badge, hover lift transition -translate-y-0.5. Include partial-failure indicator if service is currently unavailable.",
+      "partial_failure_handling": "When a backend microservice (e.g., Resume Service or Stripe API) is down, render a subtle warning alert badge inside the card: 'Service Offline' or 'Degraded', showing fallback cached data with retry button."
+    },
+    "auth_pages": {
+      "layout": "Two-column split view. Left side: High-impact editorial graphic banner with testimonials & key feature chips ('AI Resume Builder', 'Live Consultation Booking', 'Instant Career Coaching'). Right side: Clean, focused form with role selector pill group (Job Seeker / Career Consultant / Administrator).",
+      "test_ids": "Mandatory data-testid on submit buttons, role toggles, email/password inputs, error messages."
+    },
+    "chat_interface": {
+      "layout": "Sidebar session list (searchable, filterable, dynamic creation) + central message log + sticky footer prompt box with prompt starters chips ('Review my resume bullet points', 'Prepare for Senior Frontend Interview', 'Salary negotiation tips').",
+      "empty_state": "Friendly greeting card with AI avatar, category suggestions, and immediate 1-click prompt triggers."
+    },
+    "resume_builder": {
+      "templates": ["Modern Professional", "ATS Classic"],
+      "features": "Tiptap rich text editor toolbar, dual-pane live preview with template toggle, version history timeline slider, PDF/Word export options.",
+      "empty_state": "Illustration container with 'Create First Resume' CTA and template choice preview thumbnails."
+    },
+    "consultation_booking": {
+      "steps": ["Select Consultant", "Choose Date & Slot", "Define Agenda & Goals", "Stripe Payment Simulation", "Confirmation & Calendar Invite"],
+      "empty_state": "Clear calendar outline with filter options by expertise (Engineering, Product, Marketing, Executive)."
+    }
+  },
+  "image_urls": {
+    "avatars": [
+      {
+        "url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBjYXJlZXIlMjBhdmF0YXIlMjBwb3J0cmFpdCUyMGNvbnN1bHRhbnR8ZW58MHx8fHwxNzkyODQ0NjEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Male Executive Career Consultant",
+        "category": "consultant_profile"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1582896911227-c966f6e7fb93?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBjYXJlZXIlMjBhdmF0YXIlMjBwb3J0cmFpdCUyMGNvbnN1bHRhbnR8ZW58MHx8fHwxNzkyODQ0NjEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Female Senior Career Coach",
+        "category": "consultant_profile"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1581065178047-8ee15951ede6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBjYXJlZXIlMjBhdmF0YXIlMjBwb3J0cmFpdCUyMGNvbnN1bHRhbnR8ZW58MHx8fHwxNzkyODQ0NjEzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Tech Strategy Advisor",
+        "category": "consultant_profile"
+      }
+    ]
+  },
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Always attach data-testid attributes to all buttons, inputs, interactive cards, stat counters, and route navigation links.",
+    "Do NOT use pure #000000 or full transparent backgrounds on overlay headers, dropdowns, or mobile sheet menus.",
+    "Ensure service health / partial failure state indicator is prominently shown in the dashboard top navigation bar or status banner.",
+    "Maintain responsive layout rules with mobile hamburger menu opening Shadcn Sheet component for sidebar navigation.",
+    "Use sonner for user toasts (success, alert, error, consultation booked).",
+    "Never hardcode empty plain text pages; always provide designed empty states with icons, actionable CTAs, and helpful context."
+  ]
+}
