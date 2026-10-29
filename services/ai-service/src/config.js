@@ -14,6 +14,7 @@ module.exports = loadEnv(
     LLM_MODEL: z.string().min(1),
     LLM_TIMEOUT_MS: z.coerce.number().int().positive(),
     LLM_MAX_RETRIES: z.coerce.number().int().min(0).max(5),
+    GEMINI_API_KEY: z.string().optional(),
     CHAT_CONTEXT_MESSAGES: z.coerce.number().int().min(2).max(100),
     AI_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive(),
   }),
